@@ -140,7 +140,7 @@ export const organizeCopy: OrganizeCopy = {
   cta: {
     heading: { pt: "Vamos organizar seu espaço?", en: "Ready to organize your space?" },
     subheading: { pt: "Entre em contato agora e receba seu orçamento", en: "Contact us now and start your assessment" },
-    phonePlaceholder: "34991640312",
+    phonePlaceholder: "34988546363",
   },
   footer: {
     date: { pt: "Desde 2023", en: "Since 2023" },
