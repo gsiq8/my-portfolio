@@ -18,11 +18,41 @@ export function ProjectDetail({ project }: { project: Project }) {
         {project.date}
         {project.tags && project.tags.length > 0 ? ` · ${project.tags.join(", ")}` : ""}
       </p>
+
+      {project.links && project.links.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-3">
+          {project.links.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-neutral-300 px-4 py-1.5 text-sm font-medium hover:bg-neutral-50"
+            >
+              {link.label} ↗
+            </a>
+          ))}
+        </div>
+      )}
+
       <div className="mt-8 space-y-4 text-neutral-800">
         {body.split("\n\n").map((paragraph, i) => (
           <p key={i}>{paragraph}</p>
         ))}
       </div>
+
+      {project.embedUrl && (
+        <div className="mt-8 overflow-hidden rounded-lg border border-neutral-200">
+          <iframe
+            src={project.embedUrl}
+            title={localize(project.title)}
+            className="h-[600px] w-full"
+            loading="lazy"
+            allowFullScreen
+            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          />
+        </div>
+      )}
     </article>
   );
 }

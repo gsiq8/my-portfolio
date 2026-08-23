@@ -13,6 +13,11 @@ export interface Achievement {
   link?: string;
 }
 
+export interface ProjectLink {
+  label: string;
+  href: string;
+}
+
 export interface Project {
   slug: string;
   title: LocalizedString;
@@ -21,6 +26,8 @@ export interface Project {
   body: LocalizedString;
   date: string;
   tags?: string[];
+  links?: ProjectLink[];
+  embedUrl?: string;
 }
 
 export interface PathPageData {

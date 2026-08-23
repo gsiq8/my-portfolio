@@ -33,7 +33,29 @@ export const paths: Record<PathKey, PathPageData> = {
         date: "2026-01",
       },
     ],
-    projects: [sampleProject("Data")],
+    projects: [
+      {
+        slug: "water-quality-etl",
+        title: {
+          pt: "Qualidade de Água do Brasil",
+          en: "Tap Water Quality in Brazil",
+        },
+        description: {
+          pt: "Do ETL à Análise",
+          en: "From ETL to Analysis",
+        },
+        thumbnail: PLACEHOLDER_THUMBNAIL,
+        body: {
+          pt: "[Substituir pelo texto completo do projeto.]",
+          en: "[Replace with the full project write-up.]",
+        },
+        date: "2026-08-23",
+        tags: ["ETL", "Python", "SQL", "Docker", "Airflow", "DAG", "Looker/Data Studio"],
+        links: [{ label: "Github", href: "https://github.com/gsiq8/water-quality-etl" }],
+        embedUrl: "https://datastudio.google.com/embed/reporting/9566a935-9d1d-4989-a18b-c06326769e8c/page/yp86F",
+      },
+      sampleProject("Data"),
+    ],
   },
   software: {
     key: "software",
