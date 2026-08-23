@@ -8,6 +8,8 @@ const translations = {
     contact: "Contact",
     resume: "Resume",
     language: "Language",
+    published: "Published",
+    updated: "Updated",
   },
   pt: {
     achievements: "Conquistas",
@@ -16,6 +18,8 @@ const translations = {
     contact: "Contato",
     resume: "Currículo",
     language: "Idioma",
+    published: "Publicado",
+    updated: "Atualizado",
   },
 } satisfies Record<Locale, Record<string, string>>;
 

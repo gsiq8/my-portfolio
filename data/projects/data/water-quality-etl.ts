@@ -11,22 +11,31 @@ export const waterQualityEtl: Project = {
     en: "From ETL to Analysis",
   },
   thumbnail: "/images/portfolio/data/water-quality-etl.png",
+  gallery: "/images/portfolio/data/water-quality-etl-gallery.png",
   date: "2026-08-23",
-  tags: ["ETL", "Python", "SQL", "Docker", "Airflow", "DAG", "Looker/Data Studio"],
+  tags: ["ETL", "Python", "SQL", "Docker", "Airflow", "DAG", "Data Studio"],
   links: [{ label: "Github", href: "https://github.com/gsiq8/water-quality-etl" }],
   body: [
     {
-      type: "paragraph",
-      text: {
-        en: "Back in 2023, I built a personalized email marketing tool for an e-commerce client — pull a customer's zip code, look up their local tap water quality, send them a report. It worked, but it was heavier and more expensive to run than it needed to be, mostly because Brazil's water quality system (SISAGUA) didn't have a public API yet. You had to work with bulk CSV exports, which meant a lot of manual wrangling before any of the data was usable.",
-        pt: "Em 2023, construí uma ferramenta de email marketing personalizada para um cliente de e-commerce — pegar o CEP do cliente, buscar a qualidade da água da torneira na região dele, enviar um relatório. Funcionava, mas era mais pesado e mais caro de rodar do que precisava ser, principalmente porque o sistema de qualidade da água do Brasil (SISAGUA) ainda não tinha uma API pública. Era preciso trabalhar com exportações de CSV em lote, o que significava bastante trabalho manual antes que os dados ficassem utilizáveis.",
-      },
+      type: "heading",
+      text: { en: "Overview", pt: "Visão Geral" },
     },
     {
       type: "paragraph",
       text: {
-        en: 'This year I rebuilt the same idea from scratch, smaller and on free tiers, as a live demo you can actually poke at: a pipeline that pulls Brazil\'s tap water quality data straight from the government\'s open-data API, cleans it up into something a non-technical person could actually read, and serves it back out through a Postgres database and a Looker Studio dashboard. You can check it out below. The marketing automation piece — the original email report flow — is still part of the project, but that\'s its own story; I get into it in more detail here [link TBD].',
-        pt: "Neste ano, reconstruí a mesma ideia do zero, menor e rodando em camadas gratuitas, como uma demo ao vivo que dá para explorar de verdade: um pipeline que puxa os dados de qualidade da água da torneira do Brasil direto da API de dados abertos do governo, limpa tudo até virar algo que uma pessoa não técnica consiga ler, e devolve isso através de um banco Postgres e um dashboard no Looker Studio. Você pode conferir abaixo. A parte de automação de marketing — o fluxo original de envio de relatório por email — ainda faz parte do projeto, mas é uma história à parte; entro em mais detalhes sobre isso aqui [link a definir].",
+        en: "I rebuilt a real-world water quality data pipeline from the ground up. It now pulls, cleans, and serves 2.3M+ records straight from Brazil's open government water-quality API (SISAGUA), fully automated and running on free-tier infrastructure. The output is a live dashboard, embedded below, plus the same email report tool the project started as: drop in a Brazilian zip code and get back what's actually in the local tap water.",
+        pt: "Reconstruí do zero um pipeline de dados real sobre qualidade da água. Hoje ele puxa, limpa e disponibiliza mais de 2,3 milhões de registros direto da API de dados abertos de qualidade da água do governo brasileiro (SISAGUA), de forma totalmente automatizada e rodando em infraestrutura de camada gratuita. O resultado é um dashboard ao vivo, incorporado abaixo, além da mesma ferramenta de relatório por email com que o projeto começou: informe um CEP brasileiro e receba o que realmente tem na água da torneira daquele local.",
+      },
+    },
+    {
+      type: "heading",
+      text: { en: "Architecture", pt: "Arquitetura" },
+    },
+    {
+      type: "paragraph",
+      text: {
+        en: "Raw records come in through SISAGUA's open-data API, get cleaned and transformed in Python, and land in a PostgreSQL database. Rather than storing the API response as-is, I designed the schema around the questions the BI layer actually needs to answer — not a raw dump. Airflow orchestrates the whole pipeline on a schedule, running fully containerized in Docker, with separate paths for incremental loads (day-to-day updates) and full historical loads (rebuilding from scratch); the same containers produce the same result whether the pipeline is processing a small update or rebuilding the full historical dataset. Data-quality validation runs automatically before anything reaches the dashboard, and Looker Studio reads straight from Postgres for the dashboard below.",
+        pt: "Os registros brutos chegam pela API de dados abertos do SISAGUA, são limpos e transformados em Python, e armazenados em um banco PostgreSQL. Em vez de guardar a resposta da API como ela vem, desenhei o schema em torno das perguntas que a camada de BI realmente precisa responder — não um despejo bruto de dados. O Airflow orquestra todo o pipeline de forma agendada, rodando totalmente containerizado em Docker, com caminhos separados para cargas incrementais (atualizações do dia a dia) e cargas históricas completas (reconstrução do zero); os mesmos containers produzem o mesmo resultado tanto processando uma atualização pequena quanto reconstruindo o histórico completo. A validação de qualidade dos dados roda automaticamente antes que qualquer coisa chegue ao dashboard, e o Looker Studio lê direto do Postgres para o dashboard abaixo.",
       },
     },
     {
@@ -35,31 +44,50 @@ export const waterQualityEtl: Project = {
       title: "Water Quality Dashboard",
     },
     {
+      type: "heading",
+      text: { en: "Engineering Challenges", pt: "Desafios de Engenharia" },
+    },
+    {
       type: "paragraph",
       text: {
-        en: 'The interesting part of rebuilding this wasn\'t the happy path, it was how much of the "obvious" plan turned out to be wrong once I actually tested it against live data. SISAGUA\'s API has five endpoints that looked like they\'d cover everything I needed — basic parameters, "other" parameters, samples out of spec, infrastructure, sampling plans. I built against all five, and only then noticed something off: the endpoint that was supposed to carry metals and pesticide readings wasn\'t returning any. I sampled it deep — hundreds of thousands of records in — and it was the same single microbiological parameter over and over. So I went back to the full API spec instead of just the five endpoints I\'d been told about, and found a different one entirely (a semester-based endpoint) that actually had the metals, pesticides, and organic compound data, with the safety threshold for each parameter built right into the record.',
-        pt: 'A parte interessante de reconstruir isso não foi o caminho feliz, foi o quanto do plano "óbvio" se mostrou errado assim que testei contra dados reais. A API do SISAGUA tem cinco endpoints que pareciam cobrir tudo que eu precisava — parâmetros básicos, "outros" parâmetros, amostras fora do padrão, infraestrutura, planos de amostragem. Construí em cima dos cinco, e só depois percebi algo estranho: o endpoint que deveria trazer leituras de metais e agrotóxicos não estava retornando nada. Investiguei bem a fundo — centenas de milhares de registros depois — e era sempre o mesmo único parâmetro microbiológico. Então voltei para a especificação completa da API em vez de me limitar aos cinco endpoints que eu tinha mapeado, e encontrei um totalmente diferente (um endpoint semestral) que de fato tinha os dados de metais, agrotóxicos e compostos orgânicos, com o limite de segurança de cada parâmetro já embutido no registro.',
+        en: "SISAGUA's API has five documented endpoints that looked like they covered everything I needed. I built against all five, then noticed one — the one that was supposed to carry metals and pesticide readings — was returning the same single microbiological parameter over and over, hundreds of thousands of records in. Going back to the full API spec instead of the five endpoints I'd been pointed to, I found a different one entirely: a semester-based endpoint that actually had the metals, pesticides, and organic compound data, with the safety threshold for each parameter built right into the record.",
+        pt: "A API do SISAGUA tem cinco endpoints documentados que pareciam cobrir tudo que eu precisava. Construí em cima dos cinco, e só depois percebi que um deles — o que deveria trazer leituras de metais e agrotóxicos — estava retornando sempre o mesmo único parâmetro microbiológico, centenas de milhares de registros depois. Voltando para a especificação completa da API em vez de me limitar aos cinco endpoints que eu tinha mapeado, encontrei um totalmente diferente: um endpoint semestral que de fato tinha os dados de metais, agrotóxicos e compostos orgânicos, com o limite de segurança de cada parâmetro já embutido no registro.",
       },
     },
     {
       type: "paragraph",
       text: {
-        en: 'That safety threshold — VMP, Valor Máximo Permitido, the max allowed value per parameter — turned into its own rabbit hole. I wanted every report to show not just "here\'s what\'s in your water" but "here\'s whether that\'s actually safe." The obvious move was to look up Brazil\'s official potability standard and hardcode the limits. Except the sources I found online disagreed with each other on the same parameter, and I wasn\'t willing to guess at something health-related. Digging into a historical government dataset I already had access to, I found the real thresholds — and then found something more interesting: those thresholds actually change over time, as the regulation gets revised. A value I\'d grabbed from 2022 data was already out of date by 2024. So instead of hardcoding anything, the pipeline now pulls the threshold live, matched to the exact period each water sample was collected in. It\'s a small design choice, but it\'s the difference between "looks right" and "is right."',
-        pt: 'Esse limite de segurança — o VMP, Valor Máximo Permitido — virou seu próprio buraco de coelho. Eu queria que cada relatório mostrasse não só "aqui está o que tem na sua água", mas "aqui está se isso é seguro ou não". O caminho óbvio era buscar o padrão oficial de potabilidade do Brasil e fixar os limites no código. Só que as fontes que encontrei online divergiam entre si no mesmo parâmetro, e eu não estava disposta a chutar algo relacionado à saúde. Cavando em uma base de dados histórica do governo à qual eu já tinha acesso, encontrei os limites reais — e aí encontrei algo mais interessante ainda: esses limites mudam ao longo do tempo, conforme a regulamentação é revisada. Um valor que eu tinha pego de dados de 2022 já estava desatualizado em 2024. Então, em vez de fixar qualquer coisa no código, o pipeline agora busca o limite ao vivo, casado com o período exato em que cada amostra de água foi coletada. É uma escolha pequena de design, mas é a diferença entre "parece certo" e "está certo".',
+        en: 'That safety threshold — VMP, the maximum allowed value per parameter — turned into the most interesting engineering decision in the project. My first instinct was to hardcode Brazil\'s official potability limits. Then I found the limits themselves change over time as the regulation gets revised — a threshold pulled from 2022 data was already outdated by 2024. So instead of hardcoding anything, the pipeline models the threshold as time-dependent: each water sample is validated against the VMP that was actually in effect on the date it was collected. It\'s a small design choice, but it\'s the difference between data that looks right and data that is right.',
+        pt: 'Esse limite de segurança — o VMP, o valor máximo permitido por parâmetro — virou a decisão de engenharia mais interessante do projeto. Meu primeiro instinto foi fixar no código os limites oficiais de potabilidade do Brasil. Só que descobri que esses limites mudam ao longo do tempo, conforme a regulamentação é revisada — um valor pego de dados de 2022 já estava desatualizado em 2024. Então, em vez de fixar qualquer coisa no código, o pipeline modela o limite como algo dependente do tempo: cada amostra de água é validada contra o VMP que estava de fato em vigor na data em que foi coletada. É uma escolha pequena de design, mas é a diferença entre dados que parecem certos e dados que estão certos.',
       },
     },
     {
       type: "paragraph",
       text: {
-        en: "The rest of the build was the usual pile of infrastructure gremlins that don't show up until you actually run things end to end: Airflow's newer major version quietly renamed half the API I'd built DAGs against before, Docker's default networking couldn't reach Supabase's direct connection at all (IPv6-only, fixed by switching to their connection pooler), and a couple of unpinned dependencies in an old requirements file broke cleanly in a fresh container even though they'd worked fine in a stale local environment for years. None of these are exotic problems — they're the kind of thing you only catch by actually deploying, not by reading the code and assuming it's fine.",
-        pt: "O resto da construção foi a pilha usual de perrengues de infraestrutura que só aparecem quando você roda tudo de ponta a ponta de verdade: uma versão mais nova do Airflow renomeou silenciosamente metade da API sobre a qual eu tinha construído as DAGs, a rede padrão do Docker não conseguia alcançar a conexão direta do Supabase de jeito nenhum (só IPv6, resolvido trocando para o pooler de conexão deles), e algumas dependências sem versão fixada em um requirements antigo quebraram na hora em um container novo, mesmo tendo funcionado bem em um ambiente local desatualizado por anos. Nenhum desses é um problema exótico — são o tipo de coisa que só aparece quando você realmente faz o deploy, não quando você lê o código e assume que está tudo bem.",
+        en: "The rest of the build was the usual pile of infrastructure issues that don't show up until you run things end to end: a newer major version of Airflow deprecated part of the API my existing DAGs were built against, so upgrading meant rewriting the affected task definitions; Docker's default networking couldn't reach Supabase's direct connection at all because it's IPv6-only, fixed by switching to Supabase's connection pooler; and a couple of unpinned dependencies in an old requirements file broke cleanly in a fresh container despite having worked fine in a stale local environment for years. None of these are exotic problems — they're the kind of thing you only catch by actually deploying, not by reading the code and assuming it's fine.",
+        pt: "O resto da construção foi a pilha usual de problemas de infraestrutura que só aparecem quando você roda tudo de ponta a ponta de verdade: uma versão major mais nova do Airflow depreciou parte da API sobre a qual minhas DAGs existentes tinham sido construídas, então atualizar significou reescrever as tasks afetadas; a rede padrão do Docker não conseguia alcançar a conexão direta do Supabase de jeito nenhum porque ela é só IPv6, resolvido trocando para o pooler de conexão do Supabase; e algumas dependências sem versão fixada em um requirements antigo quebraram na hora em um container novo, mesmo tendo funcionado bem em um ambiente local desatualizado por anos. Nenhum desses é um problema exótico — são o tipo de coisa que só aparece quando você realmente faz o deploy, não quando você lê o código e assume que está tudo bem.",
       },
+    },
+    {
+      type: "heading",
+      text: { en: "What Changed Since 2023", pt: "O Que Mudou Desde 2023" },
     },
     {
       type: "paragraph",
       text: {
-        en: "If you want to see what your own city's tap water looks like, or you're the kind of person who reads a data pipeline write-up all the way to the bottom (respect), I'm running the original email report flow from this project too — drop your email below and I'll send you a full water quality report for your city.",
-        pt: "Se você quer ver como está a água da torneira na sua própria cidade, ou é do tipo que lê um texto sobre pipeline de dados até o final (respeito), eu também estou rodando o fluxo original de relatório por email deste projeto — deixe seu email abaixo e eu te envio um relatório completo de qualidade da água da sua cidade.",
+        en: "This isn't a new idea. Back in 2023 I built a version of this for an e-commerce client: pull a customer's zip code, look up local tap water quality, send them a report. It worked, but SISAGUA didn't have a public API yet, so it ran on manually-wrangled bulk CSV exports — heavier and more expensive to operate than it needed to be. Revisiting it now wasn't about redoing the same thing; it was about rebuilding the underlying data architecture properly, now that a real API exists: automated ingestion instead of manual CSVs, a schema and validation layer instead of ad hoc cleaning, and a live dashboard instead of email-only output. The email report is still part of the project — it's below — but the platform behind it is a different piece of engineering entirely.",
+        pt: "Essa não é uma ideia nova. Em 2023, construí uma versão disso para um cliente de e-commerce: pegar o CEP do cliente, buscar a qualidade da água da torneira na região dele, enviar um relatório. Funcionava, mas o SISAGUA ainda não tinha uma API pública, então rodava em cima de exportações de CSV em lote trabalhadas manualmente — mais pesado e mais caro de operar do que precisava ser. Revisitar o projeto agora não foi sobre refazer a mesma coisa; foi sobre reconstruir a arquitetura de dados por trás dele de forma correta, agora que existe uma API de verdade: ingestão automatizada em vez de CSVs manuais, um schema e uma camada de validação em vez de limpeza ad hoc, e um dashboard ao vivo em vez de uma saída só por email. O relatório por email ainda faz parte do projeto — está logo abaixo — mas a plataforma por trás dele é um trabalho de engenharia completamente diferente.",
+      },
+    },
+    {
+      type: "heading",
+      text: { en: "Try It Yourself", pt: "Experimente Você Mesmo" },
+    },
+    {
+      type: "paragraph",
+      text: {
+        en: "Want to see the pipeline in action? Drop your email and a Brazilian zip code below to receive a full water-quality report for that location — the same report the original 2023 version sent, now running on this rebuilt platform. (And if you read a data pipeline write-up all the way to the bottom: respect.)",
+        pt: "Quer ver o pipeline em ação? Deixe seu email e um CEP brasileiro abaixo para receber um relatório completo de qualidade da água daquele local — o mesmo relatório que a versão original de 2023 enviava, agora rodando nessa plataforma reconstruída. (E se você leu um texto sobre pipeline de dados até o final: respeito.)",
       },
     },
     {

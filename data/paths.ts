@@ -2,6 +2,7 @@ import type { PathKey, PathPageData, Project } from "./types";
 import { waterQualityEtl } from "./projects/data/water-quality-etl";
 
 const PLACEHOLDER_THUMBNAIL = "/images/portfolio/placeholder.svg";
+const PLACEHOLDER_GALLERY = " /images/portfolio/placeholder-gallery.svg";
 
 function sampleProject(pathLabel: string): Project {
   return {
@@ -15,6 +16,7 @@ function sampleProject(pathLabel: string): Project {
       pt: "Uma ou duas frases descrevendo o projeto, exibidas no card da galeria.",
     },
     thumbnail: PLACEHOLDER_THUMBNAIL,
+    gallery: PLACEHOLDER_GALLERY,
     body: [
       {
         type: "paragraph",
@@ -34,9 +36,9 @@ export const paths: Record<PathKey, PathPageData> = {
     label: { en: "Data", pt: "Dados" },
     achievements: [
       {
-        title: { en: "[Sample certification — replace me]", pt: "[Certificação de exemplo — substituir]" },
-        issuer: "Issuer",
-        date: "2026-01",
+        title: { en: "Linear Algebra", pt: "Álgebra Linear" },
+        issuer: "Harvard Summer School",
+        date: "Harvard University 2026-08",
       },
     ],
     projects: [waterQualityEtl, sampleProject("Data")],

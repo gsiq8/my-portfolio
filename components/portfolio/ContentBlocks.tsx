@@ -13,6 +13,14 @@ export function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
   return (
     <div className="space-y-6 text-neutral-800">
       {blocks.map((block, i) => {
+        if (block.type === "heading") {
+          return (
+            <h3 key={i} className="pt-2 text-lg font-semibold tracking-tight text-neutral-900">
+              {localize(block.text)}
+            </h3>
+          );
+        }
+
         if (block.type === "paragraph") {
           return <p key={i}>{localize(block.text)}</p>;
         }
@@ -51,7 +59,7 @@ export function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
           );
         }
 
-        return <div key={i} className={`klaviyo-form-${block.formId}`} />;
+        return <div key={i} className={`bg-[#EFF5FB] pt-3 klaviyo-form-${block.formId}`} />;
       })}
     </div>
   );

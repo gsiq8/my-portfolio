@@ -14,7 +14,7 @@ export function ProjectGalleryItem({ project, pathKey }: { project: Project; pat
       className="group flex gap-4 rounded-lg p-2 transition hover:bg-neutral-50"
     >
       <div className="relative h-24 w-32 flex-shrink-0 overflow-hidden rounded-md bg-neutral-100">
-        <Image src={project.thumbnail} alt="" fill sizes="128px" className="object-cover" />
+        <Image src={project.gallery} alt="" fill sizes="128px" className="object-cover" />
       </div>
       <div className="min-w-0">
         <h3 className="font-medium text-neutral-900 group-hover:underline">{localize(project.title)}</h3>

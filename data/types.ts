@@ -19,6 +19,7 @@ export interface ProjectLink {
 }
 
 export type ContentBlock =
+  | { type: "heading"; text: LocalizedString }
   | { type: "paragraph"; text: LocalizedString }
   | { type: "embed"; url: string; title?: string }
   | { type: "image"; src: string; caption?: LocalizedString }
@@ -29,6 +30,7 @@ export interface Project {
   title: LocalizedString;
   description: LocalizedString;
   thumbnail: string;
+  gallery: string;
   body: ContentBlock[];
   date: string;
   tags?: string[];
