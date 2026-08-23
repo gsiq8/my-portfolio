@@ -10,7 +10,7 @@ export const waterQualityEtl: Project = {
     pt: "Do ETL à Análise",
     en: "From ETL to Analysis",
   },
-  thumbnail: "/images/portfolio/placeholder.svg",
+  thumbnail: "/images/portfolio/data/water-quality-etl.png",
   date: "2026-08-23",
   tags: ["ETL", "Python", "SQL", "Docker", "Airflow", "DAG", "Looker/Data Studio"],
   links: [{ label: "Github", href: "https://github.com/gsiq8/water-quality-etl" }],
