@@ -33,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script
           src="https://static.klaviyo.com/onsite/js/WyDf6D/klaviyo.js"
           strategy="afterInteractive"
+          className="bg-[#EFF5FB]"
         />
       </body>
     </html>
