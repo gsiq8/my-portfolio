@@ -66,12 +66,5 @@ export const waterQualityEtl: Project = {
       type: "klaviyo-form",
       formId: "RejCPY",
     },
-    {
-      type: "paragraph",
-      text: {
-        en: "It's a small, honest use of the exact system this whole post is about.",
-        pt: "É um uso pequeno e honesto exatamente do sistema sobre o qual este post inteiro fala.",
-      },
-    },
   ],
 };
