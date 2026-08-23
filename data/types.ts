@@ -18,16 +18,21 @@ export interface ProjectLink {
   href: string;
 }
 
+export type ContentBlock =
+  | { type: "paragraph"; text: LocalizedString }
+  | { type: "embed"; url: string; title?: string }
+  | { type: "image"; src: string; caption?: LocalizedString }
+  | { type: "klaviyo-form"; formId: string };
+
 export interface Project {
   slug: string;
   title: LocalizedString;
   description: LocalizedString;
   thumbnail: string;
-  body: LocalizedString;
+  body: ContentBlock[];
   date: string;
   tags?: string[];
   links?: ProjectLink[];
-  embedUrl?: string;
 }
 
 export interface PathPageData {

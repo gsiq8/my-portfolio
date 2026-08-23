@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import "./globals.css";
@@ -29,6 +30,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <LanguageProvider>{children}</LanguageProvider>
+        <Script
+          src="https://static.klaviyo.com/onsite/js/WyDf6D/klaviyo.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { ContentBlocks } from "./ContentBlocks";
 import type { Project } from "@/data/types";
 
 export function ProjectDetail({ project }: { project: Project }) {
   const { localize } = useLanguage();
-  const body = localize(project.body);
 
   return (
     <article>
@@ -35,24 +35,9 @@ export function ProjectDetail({ project }: { project: Project }) {
         </div>
       )}
 
-      <div className="mt-8 space-y-4 text-neutral-800">
-        {body.split("\n\n").map((paragraph, i) => (
-          <p key={i}>{paragraph}</p>
-        ))}
+      <div className="mt-8">
+        <ContentBlocks blocks={project.body} />
       </div>
-
-      {project.embedUrl && (
-        <div className="mt-8 overflow-hidden rounded-lg border border-neutral-200">
-          <iframe
-            src={project.embedUrl}
-            title={localize(project.title)}
-            className="h-[600px] w-full"
-            loading="lazy"
-            allowFullScreen
-            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          />
-        </div>
-      )}
     </article>
   );
 }
