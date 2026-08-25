@@ -8,7 +8,7 @@ export interface AboutContent {
 }
 
 export const about: AboutContent = {
-  name: "Giovana Siquieroli",
+  name: "Siquieroli",
   photo: "/images/portfolio/placeholder.svg",
   bio: [
     {
@@ -17,7 +17,7 @@ export const about: AboutContent = {
     },
   ],
   links: [
-    { label: "Email", href: "mailto:giovana.siquieroli@gmail.com" },
+    { label: "Email", href: "contact@siquieroli.com" },
     { label: "GitHub", href: "https://github.com/" },
     { label: "LinkedIn", href: "https://linkedin.com/" },
   ],
