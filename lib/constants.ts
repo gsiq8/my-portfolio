@@ -1,6 +1,6 @@
 import type { LocalizedString, PathKey } from "@/data/types";
 
-export const SITE_NAME = "Giovana Siquieroli";
+export const SITE_NAME = "Siquieroli";
 
 export interface NavItem {
   key: PathKey | "about";
